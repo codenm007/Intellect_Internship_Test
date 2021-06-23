@@ -1,0 +1,19 @@
+{
+  "name": "demo_restro",
+  "version": "1.0.0",
+  "description": "A demo resturant management app",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "google.com"
+  },
+  "author": "Nilanjan Majumdar",
+  "license": "ISC",
+  "dependencies": {
+    "knex": "^0.95.6",
+    "pg": "^8.6.0"
+  }
+}
