@@ -4,7 +4,7 @@ const router = express.Router();
 const passport = require("../config/passport");
 
 //imporing controllers
-const {add_resro,add_restro_tables,update_restro_tables,delete_restro_tables} = require("../controller/restro");
+const {add_resro,add_restro_tables,update_restro_tables,delete_restro_tables,book_table} = require("../controller/restro");
 
 //public routes
 
@@ -32,5 +32,11 @@ const {add_resro,add_restro_tables,update_restro_tables,delete_restro_tables} = 
     passport.authenticate("jwt", { session: false }),
     delete_restro_tables
   ); 
+
+  router.post(
+    "/book_table",
+    passport.authenticate("jwt", { session: false }),
+    book_table
+  );
 
 module.exports = router;
