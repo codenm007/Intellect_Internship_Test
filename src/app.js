@@ -1,4 +1,3 @@
-require("dotenv").config();
 const express = require("express");
 const app = new express();
 const parser = require("body-parser");
@@ -6,7 +5,11 @@ const cors = require('cors');
 const helmet = require("helmet");
 
 app.use(helmet());
+
+//cors allowed to all
+
 app.use(cors());
+//body parser configarations
 app.use(
   parser.urlencoded({
     extended: false,
@@ -21,8 +24,17 @@ app.get("/", (req, res) => {
     resp_message : "Hi from Nilanjan, don't worry server is up and running !",
     });
   });
-  
 
+  //importing routes
+  const resturant = require("./routes/resturant");
+  const user = require("./routes/user");
+
+  //using routes
+
+  app.use('/resturant',resturant);
+  app.use('/user',user);
+  
+  //invalid route settings
 app.all("*", (req, res) => {
   res.status(200).json({
    resp_code : 204,
@@ -30,7 +42,7 @@ app.all("*", (req, res) => {
    });
 });
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8081;
 
 app.listen(PORT , ()=>
 console.log(`Server is listening on port ${PORT}`)
