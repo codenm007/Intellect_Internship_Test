@@ -9,6 +9,8 @@ exports.up = function (knex) {
       t.integer("city_id").notNull();
       t.integer("state_id").notNull();
       t.integer("country_id").notNull();
+      t.time("opens_at").notNull();
+      t.time("closes_at").notNull();
       t.float("rating");
       t.timestamp("created_at").notNullable().defaultTo(knex.raw("now()"));
       t.datetime("updated_at").notNullable().defaultTo(knex.raw("now()"));
