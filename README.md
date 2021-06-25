@@ -36,9 +36,11 @@
 
 > 2. **Rename the demo.env to .env and enter the imortant env details** .
 
-> 3. **Start the server by** `npm start`
+> 3. **Restore the database from the dump.sql file or use knex migrations for fresh tables** .
 
-> 4. **The server will be running on** http://localhost:8081/
+> 4. **Start the server by** `npm start`
+
+> 5. **The server will be running on** http://localhost:8081/
 
   
 
