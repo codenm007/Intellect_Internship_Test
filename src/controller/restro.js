@@ -304,11 +304,12 @@ const book_table = async (req, res, next) => {
 
           new_table_booking
             .save()
-            .then(() => {
+            .then((data) => {
               return res.status(200).json({
                 status: 200,
                 message:
                   "Congratulations your Table booking was confirmed, enjoy !",
+                booking_id:data.id  
               });
             })
             .catch((err) => {
@@ -326,6 +327,50 @@ const book_table = async (req, res, next) => {
         .catch((err) => {
           console.log(err);
          });
+    });
+};
+
+//resturant cancel booked tables
+const cancel_booked_table = async (req, res, next) => {
+  let jwtlength = req.get("Authorization").length;
+  let decoded = jwt_decode(req.get("Authorization").slice(7, jwtlength));
+
+  //checking if the fields are none
+  if (
+    !req.body.booking_id
+  ) {
+    return res.status(400).json({
+      resp_code: 400,
+      resp_message: "Fields Empty !",
+    });
+  }
+
+  const { booking_id} = req.body;
+
+  resturant_tables_booking
+    .where({
+      id: booking_id,
+      booked_by:decoded.sub
+    })
+    .save(
+      {
+        status_code: 2,
+        updated_at: `now()`,
+      },
+      { patch: true }
+    )
+    .then(() => {
+      //if confirmed booking for that table is available
+      return res.status(403).json({
+        resp_code: 403,
+        resp_message: "Table booking cancelled !",
+      });
+    })
+    .catch(() => {
+      return res.status(400).json({
+        resp_code: 400,
+        resp_message: "Invalid booking id !",
+      });
     });
 };
 
@@ -488,5 +533,6 @@ module.exports = {
   book_table,
   get_restros_by_city,
   get_restros_details,
-  get_restros_table_details
+  get_restros_table_details,
+  cancel_booked_table
 };

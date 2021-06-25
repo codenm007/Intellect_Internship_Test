@@ -12,7 +12,8 @@ const {
   book_table,
   get_restros_by_city,
   get_restros_details,
-  get_restros_table_details
+  get_restros_table_details,
+  cancel_booked_table
 } = require("../controller/restro");
 
 //public routes
@@ -37,6 +38,13 @@ router.post(
   passport.authenticate("jwt", { session: false }),
   add_resro
 );
+
+router.post(
+  "/cancel_booked_table",
+  passport.authenticate("jwt", { session: false }),
+  cancel_booked_table
+);
+
 
 router.post(
   "/add_restro_tables",
