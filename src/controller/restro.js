@@ -235,12 +235,14 @@ const book_table = async (req, res, next) => {
 
   const { res_id, table_id, reserved_at, special_req } = req.body;
 
+  const converted_reserver_time = new Date(`${new Date(reserved_at).toISOString().slice(0,13)}:00:00${new Date(reserved_at).toISOString().slice(19)}`).toISOString()
+
   resturant_tables_booking
     .where({
       table_id: table_id,
       res_id: res_id,
       status_code: 1,
-      reserved_at: reserved_at,
+      reserved_at: converted_reserver_time,
     })
     .fetch()
     .then(() => {
@@ -286,7 +288,7 @@ const book_table = async (req, res, next) => {
           }
           //console.log(open_time_mil,closed_time_mil,reservation_time_mil)
 
-          const converted_reserver_time = new Date(`${new Date(reserved_at).toISOString().slice(0,13)}:00:00${new Date(reserved_at).toISOString().slice(19)}`).toISOString()
+         
           //console.log(`${new Date(reserved_at).toISOString().slice(0,13)}:00:00${new Date(reserved_at).toISOString().slice(19)}`,converted_reserver_time);
 
           if(open){
@@ -398,7 +400,85 @@ const get_restros_details = async (req, res, next) => {
 };
 
 //get resurant tables details
+const get_restros_table_details = async (req, res, next) => {
+  
+  const {res_id,date_time} = req.body;
 
+  //checking if the fields are none
+  if (!res_id || !date_time) {
+    return res.status(200).json({
+      resp_code: 400,
+      resp_message: "Fields Empty !",
+    });
+  }
+
+  resturants.where({id:res_id})
+  .fetch({
+    columns:['opens_at','closes_at']
+  }).then(data => {
+
+    const converted_reserver_time = new Date(`${new Date(date_time).toISOString().slice(0,13)}:00:00${new Date(date_time).toISOString().slice(19)}`).toISOString()
+
+  resturant_tables
+    .where({ res_id: res_id })
+    .fetchAll({columns:['id','chairs','spl_id']})
+    .then((data) => {
+      let restro_table_data = JSON.parse(JSON.stringify(data));
+
+      //fetching table booking that specific date
+      resturant_tables_booking
+      .where({res_id:res_id,status_code:1,reserved_at:converted_reserver_time})
+      .fetchAll({
+        columns:['table_id']
+      })
+      .then(table_booking_data => {
+        let booked_tables_data = JSON.parse(JSON.stringify(table_booking_data))
+        //console.log(restro_table_data ,"56565656", booked_tables_data,1000000);
+
+        let booked_tables= [];
+
+        //searating out booked tables
+        booked_tables_data.forEach(j => {
+          restro_table_data.forEach(k =>{
+            if(j.table_id ==k.id ){
+              //console.log('matched',k)
+              booked_tables.push(k);
+            }
+          })
+        })
+        //finding empty tables
+        let empty_tables = restro_table_data.filter( x => !booked_tables.includes(x));
+
+        //console.log(4711,booked_tables,8989898989,empty_tables);
+        return res.status(200).json({
+          status: 200,
+          message:"Resturant table details" ,
+          empty_tables:empty_tables,
+          booked_tables:booked_tables
+        });
+
+      })
+      .catch(err => {
+        console.log(err)
+      })
+      
+    })
+    .catch((err)=>{
+      console.log(err)
+      return res.status(404).json({
+        status: 404,
+        message:"Resturant have'nt listed tables till now !" ,
+      });
+    })
+  })
+    .catch((err) => {
+      console.log(err);
+      return res.status(404).json({
+        status: 404,
+        message:"Resurant no found" ,
+      });
+    });
+};
 
 module.exports = {
   add_resro,
@@ -407,5 +487,6 @@ module.exports = {
   delete_restro_tables,
   book_table,
   get_restros_by_city,
-  get_restros_details
+  get_restros_details,
+  get_restros_table_details
 };

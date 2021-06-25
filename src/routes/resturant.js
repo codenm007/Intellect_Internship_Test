@@ -11,7 +11,8 @@ const {
   delete_restro_tables,
   book_table,
   get_restros_by_city,
-  get_restros_details
+  get_restros_details,
+  get_restros_table_details
 } = require("../controller/restro");
 
 //public routes
@@ -25,6 +26,10 @@ router.post(
   get_restros_details
 );
 
+router.post(
+  "/get_restros_table_details",
+  get_restros_table_details
+);
 
 //proected routes
 router.post(

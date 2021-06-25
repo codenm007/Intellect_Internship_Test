@@ -8,11 +8,6 @@ const resturant_tables = db.Model.extend({
     tableName: "resturant_tables",
   });  
   
-const resturant_tables_booking = db.Model.extend({
-    tableName: "resturant_tables_booking",
-  });
-
-
 const resturants = db.Model.extend({
     tableName: "resturants",
     closed_days(){
@@ -20,6 +15,12 @@ const resturants = db.Model.extend({
     }
   }); 
   
+const resturant_tables_booking = db.Model.extend({
+    tableName: "resturant_tables_booking",
+    resturant_details(){
+      return this.hasOne(resturants,'id','res_id');
+    }
+  });
 
   module.exports = {
     resturants,
