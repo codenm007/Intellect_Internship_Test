@@ -237,6 +237,7 @@ const book_table = async (req, res, next) => {
 
   const converted_reserver_time = new Date(`${new Date(reserved_at).toISOString().slice(0,13)}:00:00${new Date(reserved_at).toISOString().slice(19)}`).toISOString()
 
+  console.log(converted_reserver_time)
   resturant_tables_booking
     .where({
       table_id: table_id,
@@ -272,7 +273,7 @@ const book_table = async (req, res, next) => {
           //checking if the booking date is in closed days
           resturant_closed_days.forEach((j) => {
               //console.log(22,j.day_code,new Date(reserved_at).getDay)
-            if (j.day_code === new Date(reserved_at).getDay()) {
+            if (j.day_code === new Date(converted_reserver_time).getDay()) {
              open = false;
             }
           });
@@ -280,7 +281,7 @@ const book_table = async (req, res, next) => {
           //resturant might not be operating under that hours
           const open_time_mil = new Date(`${new Date(reserved_at).toISOString().slice(0,10)}T${resturant_opens_at}`).getTime();
           const closed_time_mil = new Date(`${new Date(reserved_at).toISOString().slice(0,10)}T${resturant_closes_at}`).getTime();
-          const reservation_time_mil = new Date(`${new Date(reserved_at).toISOString().slice(0,19)}`).getTime();
+          const reservation_time_mil = new Date(`${new Date(converted_reserver_time).toISOString().slice(0,19)}`).getTime();
 
           //checking operation hours
           if(open_time_mil > reservation_time_mil || closed_time_mil < reservation_time_mil){
