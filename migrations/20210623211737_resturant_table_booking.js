@@ -7,7 +7,6 @@ exports.up = function (knex) {
       t.integer("status_code");
       t.timestamp("reserved_at").notNullable();
       t.string("special_req");
-      t.integer("no_of_guest").notNullable();
       t.float("user_rating");
       t.timestamp("created_at").notNullable().defaultTo(knex.raw("now()"));
       t.timestamp("updated_at").notNullable().defaultTo(knex.raw("now()"));

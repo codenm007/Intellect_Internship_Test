@@ -87,7 +87,7 @@ const add_restro_tables = async (req, res, next) => {
   let decoded = jwt_decode(req.get("Authorization").slice(7, jwtlength));
 
   //checking if the fields are none
-  if (!req.body.res_id || !req.body.spl_id) {
+  if (!req.body.res_id || !req.body.spl_id || !req.body.chairs) {
     return res.status(200).json({
       resp_code: 400,
       resp_message: "Fields Empty !",
@@ -101,6 +101,7 @@ const add_restro_tables = async (req, res, next) => {
       const add_tables = new resturant_tables({
         res_id: req.body.res_id,
         spl_id: req.body.spl_id,
+        chairs:req.body.chairs
       });
 
       add_tables
@@ -148,6 +149,7 @@ const update_restro_tables = async (req, res, next) => {
         .save(
           {
             spl_id: req.body.spl_id,
+            chairs:req.body.chairs,
             updated_at: `now()`,
           },
           { patch: true }
@@ -214,7 +216,7 @@ const delete_restro_tables = async (req, res, next) => {
     });
 };
 
-//resturant book deliver
+//resturant book table
 const book_table = async (req, res, next) => {
   let jwtlength = req.get("Authorization").length;
   let decoded = jwt_decode(req.get("Authorization").slice(7, jwtlength));
@@ -223,8 +225,7 @@ const book_table = async (req, res, next) => {
   if (
     !req.body.res_id ||
     !req.body.table_id ||
-    !req.body.reserved_at ||
-    !req.body.no_of_guest
+    !req.body.reserved_at 
   ) {
     return res.status(400).json({
       resp_code: 400,
@@ -232,7 +233,7 @@ const book_table = async (req, res, next) => {
     });
   }
 
-  const { res_id, table_id, reserved_at, no_of_guest, special_req } = req.body;
+  const { res_id, table_id, reserved_at, special_req } = req.body;
 
   resturant_tables_booking
     .where({
@@ -296,8 +297,7 @@ const book_table = async (req, res, next) => {
             booked_by: decoded.sub,
             status_code: 1,
             reserved_at: converted_reserver_time,
-            special_req: special_req,
-            no_of_guest: no_of_guest,
+            special_req: special_req
           });
 
           new_table_booking
@@ -327,10 +327,47 @@ const book_table = async (req, res, next) => {
     });
 };
 
+//get restros
+const get_restros_by_city = async (req, res, next) => {
+  
+  const {city_id,page_size,page} = req.body;
+
+  //checking if the fields are none
+  if (!city_id) {
+    return res.status(200).json({
+      resp_code: 400,
+      resp_message: "Fields Empty !",
+    });
+  }
+
+  resturants
+    .where({ city_id: city_id })
+    .fetchPage({
+      pageSize: page_size, // Defaults to 10 if not specified
+      page: page, // Defaults to 1 if not specified
+      withRelated: ['closed_days'], // Passed to Model#fetchAll
+      columns: ['id','name','logo','cuisines','contant_number','opens_at','closes_at']
+    })
+    .then((data) => {
+      return res.status(200).json({
+        status: 200,
+        message:'Resturants fetched successfully!' ,
+        data:data
+      });
+    })
+    .catch((err) => {
+      return res.status(400).json({
+        status: 400,
+        message:err ,
+      });
+    });
+};
+
 module.exports = {
   add_resro,
   add_restro_tables,
   update_restro_tables,
   delete_restro_tables,
   book_table,
+  get_restros_by_city
 };
