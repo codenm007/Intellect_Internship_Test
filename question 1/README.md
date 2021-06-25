@@ -52,7 +52,7 @@
 
   
 
-**Dev By : *Nilanjan Majumdar***
+**Dev By : Nilanjan Majumdar**
 
   
 
