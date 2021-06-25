@@ -2,7 +2,7 @@
 
 ###  Please visit https://dbdiagram.io/d/60d5cb1ddd6a5971481f9595 for interactive diagram.
 
-##Snapshot
+## Snapshot
 ![enter image description here](image.png)
 
 
