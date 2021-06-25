@@ -380,7 +380,7 @@ const get_restros_details = async (req, res, next) => {
     .where({ id: res_id })
     .fetch({
       withRelated: ['closed_days'], // Passed to Model#fetchAll
-      columns: ['id','name','logo','cuisines','contant_number','opens_at','closes_at']
+      columns: ['id','name','logo','cuisines','contant_number','opens_at','closes_at','city_id','state_id','country_id']
     })
     .then((data) => {
       return res.status(200).json({
@@ -396,6 +396,9 @@ const get_restros_details = async (req, res, next) => {
       });
     });
 };
+
+//get resurant tables details
+
 
 module.exports = {
   add_resro,
