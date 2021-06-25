@@ -346,7 +346,7 @@ const get_restros_by_city = async (req, res, next) => {
       pageSize: page_size, // Defaults to 10 if not specified
       page: page, // Defaults to 1 if not specified
       withRelated: ['closed_days'], // Passed to Model#fetchAll
-      columns: ['id','name','logo','cuisines','contant_number','opens_at','closes_at']
+      columns: ['id','name','logo','cuisines','opens_at','closes_at']
     })
     .then((data) => {
       return res.status(200).json({
@@ -363,11 +363,46 @@ const get_restros_by_city = async (req, res, next) => {
     });
 };
 
+//get_resurant_details 
+const get_restros_details = async (req, res, next) => {
+  
+  const {res_id} = req.body;
+
+  //checking if the fields are none
+  if (!res_id) {
+    return res.status(200).json({
+      resp_code: 400,
+      resp_message: "Fields Empty !",
+    });
+  }
+
+  resturants
+    .where({ id: res_id })
+    .fetch({
+      withRelated: ['closed_days'], // Passed to Model#fetchAll
+      columns: ['id','name','logo','cuisines','contant_number','opens_at','closes_at']
+    })
+    .then((data) => {
+      return res.status(200).json({
+        status: 200,
+        message:'Resturant fetched successfully!' ,
+        data:data
+      });
+    })
+    .catch(() => {
+      return res.status(404).json({
+        status: 404,
+        message:"Not found" ,
+      });
+    });
+};
+
 module.exports = {
   add_resro,
   add_restro_tables,
   update_restro_tables,
   delete_restro_tables,
   book_table,
-  get_restros_by_city
+  get_restros_by_city,
+  get_restros_details
 };
