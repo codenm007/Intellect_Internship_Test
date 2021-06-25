@@ -30,7 +30,7 @@
 
 ## Important Info
 
-  
+#### Demo heroku server link [here. ](https://localrestro.herokuapp.com/)  
 
 > 1. **Get into the cloned folder and tye** `npm i`.
 
@@ -44,9 +44,11 @@
 
   
 
-##
+## Technologies Used:
 
-  
+ - NodeJS
+ - ExpressJS
+ - PostgreSQL
 
 **Some info about developer:**
 
