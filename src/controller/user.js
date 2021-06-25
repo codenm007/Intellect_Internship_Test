@@ -1,9 +1,14 @@
 require("dotenv").config({ path: "../../.env" });
 
 const JWT = require("jsonwebtoken");
+const jwt_decode = require("jwt-decode");
 const validator = require("validator");
 //importing models
 const User = require ("../models/user");
+//importing models
+const {
+  resturant_tables_booking,
+} = require("../models/resturants");
 
 //for signup
 const signup = async (req, res, next) => {
@@ -13,7 +18,7 @@ const signup = async (req, res, next) => {
     User.forge({ email: req.body.email })
       .fetch()
       .then(() => {
-        return res.status(200).json({
+        return res.status(400).json({
           resp_code: 400,
           resp_message: "User Already registered !",
         });
@@ -98,7 +103,7 @@ const login = async (req, res, next) => {
 
     
     if (!req.body.email || !req.body.password) {
-      return res.status(200).json({
+      return res.status(400).json({
         resp_code: 400,
         resp_message: "Fields Empty !",
         data: "",
@@ -145,8 +150,39 @@ const login = async (req, res, next) => {
       });
   };
 
+  //user booking data
+const get_user_booking_data = async (req, res, next) => {
+
+  let jwtlength = req.get("Authorization").length;
+  let decoded = jwt_decode(req.get("Authorization").slice(7, jwtlength));
+
+  const {page_size,page} = req.body;
+
+
+  resturant_tables_booking
+  .where({ booked_by: decoded.sub })
+  .orderBy("created_at", "desc")
+  .fetchPage({
+    pageSize: page_size, // Defaults to 10 if not specified
+    page: page // Defaults to 1 if not specified
+  }).then(data =>{
+    return res.status(200).json({
+      resp_code: 200,
+      resp_message: "Details fetched successfully!",
+      data: data,
+    });
+  }).catch(err =>{
+    return res.status(200).json({
+      resp_code: 200,
+      resp_message: "Error",
+      data: err,
+    });
+  })
+  };
+  
 
   module.exports = {
       login,
-      signup
+      signup,
+      get_user_booking_data
   }
