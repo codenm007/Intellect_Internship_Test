@@ -8,7 +8,7 @@
 - Developed a anonymous p2p video call app using webRTC [Github Link](https://github.com/codenm007/Anonymous-P2P-Video-Calling)
 
 #### Web3js :
--Currently learning web3js for developing dapps and deploying smart contracts in etherium
+-Currently learning web3js for developing dapps and deploying smart contracts in Ethereum.
 
 #### ReactJS :
 - Used react for various personal projects and have understanding of react redux and a bit of hooks.
